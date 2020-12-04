@@ -1,10 +1,10 @@
 import React from 'react';
-import { FlipCard as FlipCartType } from '../../types/FlipCard';
+import { FlipCard as FlipCardType } from '../../types/FlipCard';
 import { useFlipAnimation } from './FlipAnimation';
 import { Container, CardFace, CardBack, FaceText, BackText } from './FlipCard.style';
 
 export interface Props {
-  data: FlipCartType;
+  data: FlipCardType;
   onFlip?: (id: string) => void;
 }
 
