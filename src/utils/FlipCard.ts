@@ -3,7 +3,7 @@ import { FlipCardState, FlipCard } from './../types/FlipCard';
 
 const CARD_PAIRS_VALUE = 6;
 
-const getCardList = (pair: number) => {
+export const getCardList = (pair: number) => {
   const cardNumbers = randomNumbers(pair);
   const shuffledNumbers = shuffle(cardNumbers.concat(cardNumbers));
   return shuffledNumbers.map((value) => ({
