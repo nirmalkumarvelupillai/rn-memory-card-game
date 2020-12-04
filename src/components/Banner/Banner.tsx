@@ -1,20 +1,11 @@
-import React, {useRef, useEffect, useState} from 'react';
-
-import {
-  Container,
-  WinnerText,
-  LoserText
-} from './Banner.style';
+import React from 'react';
+import { Container, WinnerText, LoserText } from './Banner.style';
 
 export interface Props {
-  isWon: boolean;
+  hasWon: boolean;
 }
 
-const Header: React.FC<Props> = ({isWon}) => {
-  return (
-    <Container>
-     { isWon ? <WinnerText>YOU WON</WinnerText> : <LoserText>TRY AGAIN</LoserText> }
-    </Container>
-  );
+const Header: React.FC<Props> = ({ hasWon }) => {
+  return <Container>{hasWon ? <WinnerText>YOU WON</WinnerText> : <LoserText>TRY AGAIN</LoserText>}</Container>;
 };
 export default Header;

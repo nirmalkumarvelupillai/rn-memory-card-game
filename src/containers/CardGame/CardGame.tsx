@@ -1,56 +1,45 @@
-import React, {useState, useEffect} from 'react';
-
+import React, { useEffect } from 'react';
 import Banner from '../../components/Banner';
 import FlipCard from '../../components/FlipCard';
-import {Container} from './CardGame.style';
+import { GameContainer, CardContainer } from './CardGame.style';
 
-export interface Card {
-  id: string;
-  value: number;
-  flipped?: boolean;
-  matched?: boolean;
-}
+import Header from '../../components/Header';
+import { FlipCard as FlipCardType, GameState } from '../../types/FlipCard';
+import { FlipCardAction } from '../../reducers/FlipCardReducer';
 
-const renderFlipCards = (cards: Card[], onFlip: (id: string) => void) => {
-  return cards.map(({id, value, flipped, matched}) => (
-    <FlipCard
-      key={id}
-      value={value}
-      flipped={flipped}
-      matched={matched}
-      onFlip={() => onFlip(id)}
-    />
-  ));
+const renderFlipCards = (cards: FlipCardType[], onFlip: (id: string) => void) => {
+  return cards.map((card) => <FlipCard key={card.id} data={card} onFlip={onFlip} />);
 };
 
 export interface Props {
-  gameOver: boolean;
-  isWon: boolean;
-  cards: Card[];
-  onUpdateCards: (cards?: Card[]) => void;
+  stats: GameState;
+  cards: FlipCardType[];
+  doFlipCard: (id: string) => FlipCardAction;
+  refreshFlipCard: () => FlipCardAction;
+  restartGame: () => FlipCardAction;
 }
 
-const CardGame: React.FC<Props> = ({gameOver, isWon, cards, onUpdateCards}) => {
+const CardGame: React.FC<Props> = ({ stats, cards, doFlipCard, refreshFlipCard, restartGame }) => {
+  const onRestart = () => {
+    restartGame();
+  };
+
   const onFlip = (id: string) => {
-    const updatedCards = cards.map((card: Card) => {
-      return {
-        ...card,
-        flipped: card.flipped || card.id === id,
-      };
-    });
-    onUpdateCards([...updatedCards]);
+    doFlipCard(id);
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => onUpdateCards(), 800);
+    const timer = setTimeout(() => refreshFlipCard(), 800);
     return () => clearTimeout(timer);
-    // updateCards();
-  }, [cards]);
+  }, [cards, refreshFlipCard]);
+
   const cardsToRender = renderFlipCards(cards, onFlip);
-  return gameOver ? (
-    <Banner isWon={isWon} />
-  ) : (
-    <Container>{cardsToRender}</Container>
+
+  return (
+    <GameContainer>
+      <Header title="Flip Match" onRestart={onRestart} steps={stats.steps} />
+      {stats.gameOver ? <Banner hasWon={stats.hasWon} /> : <CardContainer>{cardsToRender}</CardContainer>}
+    </GameContainer>
   );
 };
 
