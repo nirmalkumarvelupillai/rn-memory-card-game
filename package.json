@@ -6,12 +6,16 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "verify": "yarn lint && yarn tsc && yarn test",
+    "test": "rm -rf coverage && export TZ=UTC && jest --coverage",
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "tsc": "tsc --project tsconfig.json"
   },
   "dependencies": {
     "react": "16.13.1",
     "react-native": "0.63.3",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
@@ -20,6 +24,7 @@
     "@react-native-community/eslint-config": "^1.1.0",
     "@types/jest": "^25.2.3",
     "@types/react-native": "^0.63.2",
+    "@types/react-redux": "^7.1.11",
     "@types/react-test-renderer": "^16.9.2",
     "@types/styled-components": "^5.1.4",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
@@ -40,6 +45,17 @@
       "jsx",
       "json",
       "node"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && yarn tsc && yarn test"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json}": [
+      "prettier --write",
+      "eslint --fix"
     ]
   }
 }

@@ -33,11 +33,11 @@ export const TitleText = styled.Text`
 `;
 
 export const Steps = styled.View`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    align-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
 `;
 
 export const FlipsText = styled.Text`

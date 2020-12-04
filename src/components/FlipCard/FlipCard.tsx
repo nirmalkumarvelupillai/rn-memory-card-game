@@ -1,70 +1,33 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Animated, View } from 'react-native';
-import { Container, CardFace, CardBack, Text } from './FlipCard.style';
+import React from 'react';
+import { FlipCard as FlipCartType } from '../../types/FlipCard';
+import { useFlipAnimation } from './FlipAnimation';
+import { Container, CardFace, CardBack, FaceText, BackText } from './FlipCard.style';
 
 export interface Props {
-  value: number;
-  flipped?: boolean;
-  matched?: boolean;
-  onFlip?: () => void;
+  data: FlipCartType;
+  onFlip?: (id: string) => void;
 }
 
-const FlipCard: React.FC<Props> = ({
-  value,
-  onFlip,
-  flipped = false,
-  matched = false
-}) => {
+const FlipCard: React.FC<Props> = ({ data, onFlip }) => {
+  const { id, value, flipped, matched } = data;
+  const [frontAnimatedStyle, backAnimatedStyle] = useFlipAnimation(flipped);
 
-  const animatedValue = useRef(new Animated.Value(0)).current;
-  const frontInterpolate = animatedValue.interpolate({
-    inputRange: [0, 180],
-    outputRange: ['0deg', '180deg']
-  });
-  const backInterpolate = animatedValue.interpolate({
-    inputRange: [0, 180],
-    outputRange: ['180deg', '360deg']
-  });
-  const animConfig: Animated.SpringAnimationConfig = {
-    toValue: 180,
-    friction: 8,
-    tension: 10,
-    useNativeDriver: true
-  }
-
-  const frontAnimatedStyle = {
-    transform: [
-      { rotateY: frontInterpolate }
-    ]
+  const onCardFlip = () => {
+    if (!matched && onFlip) {
+      onFlip(id);
+    }
   };
-
-  const backAnimatedStyle = {
-    transform: [
-      { rotateY: backInterpolate }
-    ]
-  };
-
-  useEffect(() => {
-    Animated.spring(
-      animatedValue,
-      {
-        ...animConfig,
-        toValue: (flipped) ? 0 : 180
-      }
-    ).start();
-  }, [flipped]);
 
   return (
-    <Container onPress={onFlip}>
-      <CardFace style={frontAnimatedStyle}>
-        <Text>{value}</Text>
+    <Container onPress={onCardFlip} disabled={matched}>
+      <CardFace style={frontAnimatedStyle} matched={matched}>
+        <FaceText>{value}</FaceText>
       </CardFace>
       <CardBack style={backAnimatedStyle}>
-        <Text style={{ color: '#ffffff'}}>?</Text>
+        <BackText>?</BackText>
       </CardBack>
-
     </Container>
-  )
-}
+  );
+};
 
 export default FlipCard;
